@@ -1,26 +1,30 @@
 const mongoose = require("mongoose");
 
 const EventSchema = new mongoose.Schema({
-  name: {
+  title: {
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
+  artist: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Artist",
     required: true,
   },
-  genre: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  bio: String,
+  date: {
+    type: Date,
+    required: true,
+  },
+  location: String,
+  description: String,
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  status: {
+    type: String,
+    enum: ["scheduled", "cancelled", "completed"],
+    default: "scheduled",
+  },
 });
 
 module.exports = mongoose.model("Event", EventSchema);
