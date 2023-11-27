@@ -6,6 +6,7 @@ const connect = require("./db/connect");
 app.get("/", (req, res) => {
   res.send("Welcome Home");
 });
+// testing
 
 const PORT = 3000;
 
