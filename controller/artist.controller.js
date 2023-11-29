@@ -7,7 +7,9 @@ const getArtist = async (req, res) => {
 
   const artist = await Artist.findOne({ _id: id });
   if (!artist) {
-    throw new Error("Artist with this Id doesnt exist");
+    return res
+      .status(404)
+      .json({ message: "Artist with this Id doesnt exist" });
   }
   const { name, genre, bio } = artist;
   const response = {
@@ -16,7 +18,7 @@ const getArtist = async (req, res) => {
     genre,
     bio,
   };
-  res.status(200).json({ ...response });
+  return res.status(200).json({ ...response });
 };
 
 module.exports = {
