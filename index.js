@@ -3,9 +3,8 @@ const express = require("express");
 const app = express();
 const connect = require("./db/connect");
 
-app.get("/", (req, res) => {
-  res.send("Welcome Home");
-});
+app.use(express.json());
+app.use("/api/v1", require("./routes/artist.route"));
 
 const PORT = 3000;
 
