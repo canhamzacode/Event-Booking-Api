@@ -7,15 +7,17 @@ const createArtist = async (req, res) => {
     const { name, email, password, genre, bio } = req.body;
 
     if (!Array.isArray(genre)) {
-      throw new Error("'genre' must be an array");
+      return res.status(401).json({ message: "'genre' must be an array" });
     }
 
     if (!genre.every((item) => typeof item === "string")) {
-      throw new Error("All elements in 'genre' must be strings");
+      return res
+        .status(401)
+        .json({ message: "All elements in 'genre' must be strings" });
     }
 
     if (!name || !email || !password || genre.length === 0) {
-      throw new Error("Fill all required fields");
+      return res.status(401).json({ message: "All fields are required" });
     }
 
     await checkEmail(email);
@@ -33,12 +35,12 @@ const createArtist = async (req, res) => {
       id,
       name,
     };
-    res.status(201).json({
+    return res.status(201).json({
       message: "Artist created Sucessfully",
       data: response,
     });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       message: "Error creating artist",
       error: error.message,
     });
