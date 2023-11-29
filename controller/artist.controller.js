@@ -29,7 +29,7 @@ const currentArtist = async (req, res) => {
       bio,
     };
 
-    return res.status(200).json({ data: response });
+    return res.status(200).json({ ...response });
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       throw new UnauthorizedError("Token has expired");
