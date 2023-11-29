@@ -12,6 +12,7 @@ const updateArtist = async (req, res) => {
         .status(401)
         .json({ message: "Token is missing or in an invalid format" });
     }
+
     const token = authorization.split(" ")[1];
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -19,14 +20,16 @@ const updateArtist = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "Invalid Token" });
     }
+
     const { id } = decoded;
 
-    if (updateData || updateData.password) {
+    if (updateData && updateData.password) {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
+
     const artist = await Artist.findOne({ _id: id });
 
-    if (updateData || updateData.email) {
+    if (updateData && updateData.email) {
       await checkUniquenessBeforeUpdate(updateData.email, artist.email);
     }
 
@@ -43,12 +46,16 @@ const updateArtist = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Artist updated sucessfully", data: response });
+      .json({ message: "Artist updated successfully", data: response });
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       return res.status(401).json({ message: "Token has expired" });
     }
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 };
 
