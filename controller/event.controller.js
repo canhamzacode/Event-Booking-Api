@@ -28,14 +28,22 @@ const updateEvent = async (req, res) => {
     if (!event) {
       return res
         .status(401)
-        .json({ message: "Event can't be updated by this user" });
+        .json({
+          message: "Event can't be updated by this user or doesnt exist",
+        });
     }
 
-    const updateEvent = await Event.updateOne({ _id: eventId }, updateData);
+    const updateEvent = await Event.findByIdAndUpdate(eventId, updateData);
+    const response = {
+      id: updateEvent._id,
+      title: updateEvent.title,
+      location: updateEvent.location,
+      time: updateEvent.title,
+    };
 
     return res.status(201).json({
       message: "Event updated successfully",
-      data: "",
+      data: response,
     });
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
