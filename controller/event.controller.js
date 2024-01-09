@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Event = require("../models/Event");
 
-const updateEvent = (req, res) => {
+const updateEvent = async (req, res) => {
   try {
     const { authorization } = req.headers;
     const updateData = req.body;
@@ -21,26 +21,21 @@ const updateEvent = (req, res) => {
     }
 
     const { id: userId } = decoded;
-    const { id: eventId } = req.param;
+    const { id: eventId } = req.params;
 
-    const events = Event.find({ artist: userId });
-    if (!events) {
+    const event = await Event.findOne({ artist: userId, _id: eventId });
+
+    if (!event) {
       return res
         .status(401)
-        .json({ message: "Event Cant be updated by this user" });
+        .json({ message: "Event can't be updated by this user" });
     }
 
-    const filterEvent = events.filter((a) => a.id === eventId);
-    if (!filterEvent) {
-      return res
-        .status(401)
-        .json({ message: "Event Cant be updated by this user" });
-    }
+    const updateEvent = await Event.updateOne({ _id: eventId }, updateData);
 
-    const updateEvent = Event.updateOne(eventId, updateData);
-    res.status(201).json({
+    return res.status(201).json({
       message: "Event updated successfully",
-      data: updateEvent,
+      data: "",
     });
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
